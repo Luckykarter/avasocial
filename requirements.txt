@@ -7,7 +7,7 @@ coreschema==0.0.4
 dj-database-url==0.5.0
 Django==3.1.4
 django-heroku==0.3.1
-djangorestframework==4.5.0
+djangorestframework==3.12.1
 djangorestframework-simplejwt==1.7.1
 drf-yasg==1.20.0
 gunicorn==20.0.4
