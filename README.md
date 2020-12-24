@@ -8,9 +8,13 @@ Description of endpoints can be found below in section API Reference
 - Hunter - https://hunter.io - e-mail validation
 - ClearBit - https://clearbit.com/ - user data enrichment
 
-## Installation
+### Installation
 The current built is for Heroku deployment. 
 Installation is deployed on: https://avasocial.herokuapp.com/
+
+## Database
+For local development - Python builtin database sqllite3 is used.
+For Heroku deployment the postgresql database is used.
 
 ### Secret keys
 The app uses three secret keys that are served from environment variables (or .env file for local development):
