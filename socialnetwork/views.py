@@ -71,7 +71,7 @@ def sign_up(request):
 def create_post(request):
     try:
         post = models.Post.objects.create(user=request.user, **request.data)
-        return Response(_get_resp(SUCCESS, f'Post with id {post.pk} successfully created'))
+        return Response(_get_resp(SUCCESS, post.pk))
     except Exception as e:
         return Response(_get_resp(FAIL, str(e)), status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
@@ -91,6 +91,9 @@ def trigger_like(request, **kwargs):
         post = models.Post.objects.get(pk=post_id)
     except models.Post.DoesNotExist:
         return Response(_get_resp(FAIL, f'Post with id {post_id} not found'), status=status.HTTP_404_NOT_FOUND)
+
+    if post.user == request.user:
+        return Response(_get_resp(FAIL, 'You cannot like your own post'), status=status.HTTP_400_BAD_REQUEST)
 
     try:
         users = post.likes_users.split(',')
