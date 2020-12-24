@@ -1,0 +1,4 @@
+/socialnetwork/migrations/
+/.env
+/db.sqlite3
+/ini/

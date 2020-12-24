@@ -1,0 +1,1 @@
+web: gunicorn avasocial.wsgi:application --log-file -
