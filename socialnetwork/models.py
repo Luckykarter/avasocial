@@ -1,12 +1,8 @@
 from django.db import models
 from django.contrib.auth.models import User
 from django.core.exceptions import ValidationError
-from django.core.files import File
 from django.conf import settings
 import os
-from tempfile import TemporaryFile
-import requests
-from urllib.parse import urlsplit
 
 
 def validate_email(email):
@@ -14,19 +10,11 @@ def validate_email(email):
         raise ValidationError('E-mail is not valid')
 
 
-def _download_to_field(url, field):
-    with TemporaryFile() as file:
-        resp = requests.get(url, stream=True)
-        for chunk in resp.iter_content(chunk_size=4096):
-            file.write(chunk)
-        file.seek(0)
-        field.save(os.path.basename(urlsplit(url).path), File(file))
-
-
 class UserProfile(models.Model):
     """
-    This model uses standard Django User model for authentication purposes
+    This model enriches standard Django User model with data and uses it for authentication purposes
     """
+
     class Meta:
         verbose_name = 'User Profile'
 
@@ -68,15 +56,6 @@ class UserProfile(models.Model):
 
         self.user.save()  # mandatory as create_user is not recognized as save operation
 
-        # TODO: download avatar picture
-        # if person.avatar_link:
-        #     with TemporaryFile() as file:
-        #         resp = requests.get(person.avatar_link, stream=True)
-        #         for chunk in resp.iter_content(chunk_size=4096):
-        #             file.write(chunk)
-        #         file.seek(0)
-        #         self.avatar.save(os.path.basename(urlsplit(person.avatar_link).path), File(file))
-
         super().save(*args, **kwargs)
 
     def __str__(self):
@@ -91,7 +70,7 @@ class Post(models.Model):
     Model responsible for storing one post with its likes and references to the creator and 'likers'
     """
     user = models.ForeignKey(User, verbose_name='User', on_delete=models.CASCADE,
-                                help_text='User submitted a post', default='')
+                             help_text='User submitted a post', default='')
     content = models.TextField(verbose_name='Post content', default='')
     timestamp = models.DateTimeField(verbose_name='Created', auto_now=True,
                                      help_text='Post creation time')
@@ -107,6 +86,7 @@ class ResponseStatus(models.Model):
     """
     Model for serializing HTTP responses
     """
+
     class Meta:
         managed = False
 

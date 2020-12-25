@@ -1,4 +1,3 @@
-from django.shortcuts import render
 from drf_yasg import openapi
 from drf_yasg.utils import swagger_auto_schema
 from rest_framework.response import Response
@@ -63,7 +62,8 @@ def sign_up(request):
     methods=['POST'],
     operation_id='create_post',
     operation_description='Create new post by logged in user\n'
-                          'Use endpoint <b>/user/login</b> for user authentication',
+                          'Use endpoint <b>/user/login</b> for user authentication\n'
+                          'In case of successful post - response will contain <b>post_id</b> in tag <b>"message"</b>',
     request_body=serializers.PostSerializer,
     responses={200: openapi.Response('OK', serializers.ResponseStatusSerializer)})
 @api_view(['POST'])
