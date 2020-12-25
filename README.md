@@ -4,6 +4,8 @@ REST API Django based simple social network
 The purpose of this application is to provide REST API endpoints for serving social network activities.
 Description of endpoints can be found in SwaggerUI/Redoc. Links provided in section API Reference
 
+https://github.com/Luckykarter/avabot - The bot that can be used for demonstrating/testing the fetures of the application
+
 ## Third party services used by application
 - Hunter - https://hunter.io - e-mail validation
 - ClearBit - https://clearbit.com/ - user data enrichment
