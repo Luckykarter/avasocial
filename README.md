@@ -10,6 +10,8 @@ https://github.com/Luckykarter/avabot - The bot that can be used for demonstrati
 - Hunter - https://hunter.io - e-mail validation
 - ClearBit - https://clearbit.com/ - user data enrichment
 
+The handlers for those services can be found in **avasocial/extapps.py**
+
 ## Installation
 The current built is for Heroku deployment. 
 Installation is deployed on: https://avasocial.herokuapp.com/
