@@ -2,17 +2,17 @@
 REST API Django based simple social network
 
 The purpose of this application is to provide REST API endpoints for serving social network activities.
-Description of endpoints can be found below in section API Reference
+Description of endpoints can be found in SwaggerUI/Redoc. Links provided in section API Reference
 
 ## Third party services used by application
 - Hunter - https://hunter.io - e-mail validation
 - ClearBit - https://clearbit.com/ - user data enrichment
 
-### Installation
+## Installation
 The current built is for Heroku deployment. 
 Installation is deployed on: https://avasocial.herokuapp.com/
 
-## Database
+### Database
 For local development - Python builtin database sqllite3 is used.
 For Heroku deployment the postgresql database is used.
 
@@ -25,12 +25,14 @@ The app uses three secret keys that are served from environment variables (or .e
 ## API Reference
 
 ### SwaggerUI
+https://avasocial.herokuapp.com/swagger
+
 <a href="https://avasocial.herokuapp.com/swagger" target="_blank">
 <img src="http://validator.swagger.io/validator?url=https://avasocial.herokuapp.com/swagger.yaml" >
 </a>
 
-### Redoc
-<a href="https://avasocial.herokuapp.com/redoc" target="_blank">Redoc reference</a>
+### Redoc (OpenAPI specification)
+https://avasocial.herokuapp.com/redoc
 
 
 ## Authorization
@@ -42,7 +44,7 @@ Please refer to the description of /user/login/ endpoint. For additional informa
 ## Used libraries
 Please refer to requirements.txt for the full list of dependencies. 
 
-Some information about the choose of libraries:
+Some information about the choosen libraries:
 - django-heroku - used for Heroku deployment
 - djangorestframework-simplejwt - for convenient access to JWT functionality
 - drf-yasg - "yet another swagger generator". For generating Swagger/Redoc documentation
