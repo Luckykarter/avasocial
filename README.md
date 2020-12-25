@@ -38,6 +38,11 @@ https://avasocial.herokuapp.com/swagger
 ### Redoc (OpenAPI specification)
 https://avasocial.herokuapp.com/redoc
 
+### Postman collection (for tests)
+Postman collection including basic tests for endpoints can be found under the following link:
+
+https://www.getpostman.com/collections/7472d2fd7045f06407f0
+
 
 ## Authorization
 User sign up does not require any authorization.
