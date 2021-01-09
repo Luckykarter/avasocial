@@ -9,13 +9,14 @@ class ClearBit:
 
     class PersonData:
         def __init__(self, email):
-            try:
-                data = clearbit.Enrichment.find(email=email, stream=True)
-                response = dict(data)
-            except Exception as e:
+            response = None
+            data = clearbit.Enrichment.find(email=email, stream=True)
+            if isinstance(data, clearbit.PersonCompany) and 'person' in data:
+                response = data['person']
+
+            if not isinstance(response, dict):
                 response = {}
 
-            response = response.get('person', {})
             name_data = response.get('name', {})
             geo_data = response.get('geo', {})
 

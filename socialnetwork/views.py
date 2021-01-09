@@ -7,6 +7,16 @@ import socialnetwork.serializers as serializers
 from socialnetwork import models
 from rest_framework.permissions import IsAuthenticated, AllowAny
 from django.contrib.auth.models import User
+from django.http import HttpResponse
+from django.template import loader
+from django.contrib.auth.decorators import login_required
+from rest_framework_simplejwt.tokens import RefreshToken
+from django.contrib.auth.forms import AuthenticationForm, UserCreationForm
+from django.contrib.auth import login, logout, authenticate
+from django.shortcuts import redirect
+import socialnetwork.forms as forms
+from django.core.exceptions import ObjectDoesNotExist, ValidationError
+from django.contrib.auth.password_validation import validate_password
 
 FAIL = 'fail'
 SUCCESS = 'success'
@@ -22,6 +32,26 @@ def _get_resp(sta, msg):
     return serializers.ResponseStatusSerializer(
         models.ResponseStatus(
             status=sta, message=msg)).data
+
+
+def _HttpResponse(request, template, context):
+    """
+    Helper that creates http response from template with cookies included refresh token for JWT
+    :param request: http request
+    :param template: html template (*.html)
+    :param context: page context (dictionaty)
+    :return: rendered web-page
+    """
+    page = loader.get_template(template)
+    response = HttpResponse(page.render(context, request))
+    if request.user.is_authenticated:
+        response.set_cookie('refresh', RefreshToken.for_user(request.user), samesite='strict')
+
+    return response
+
+
+def _validation_error_response(e):
+    return Response(_get_resp(FAIL, "\n".join([x for x in e])), status=status.HTTP_400_BAD_REQUEST)
 
 
 @swagger_auto_schema(
@@ -41,6 +71,12 @@ def sign_up(request):
     if 'user' not in data:
         return Response(_get_resp(FAIL, 'User data is missing'), status=status.HTTP_400_BAD_REQUEST)
 
+    email = data.get('email')
+    try:
+        models.validate_email(email)
+    except ValidationError as e:
+        return _validation_error_response(e)
+
     user_data = data.pop('user')
     username = user_data.get('username')
 
@@ -49,7 +85,13 @@ def sign_up(request):
         return Response(_get_resp(FAIL, f'User with username {username} already exists'),
                         status=status.HTTP_400_BAD_REQUEST)
 
-    user = User(username=username, password=user_data.get('password'))
+    password = user_data.get('password')
+    try:
+        validate_password(password)
+    except ValidationError as e:
+        return _validation_error_response(e)
+
+    user = User(username=username, password=password)
 
     try:
         models.UserProfile.objects.create(user=user, **data)
@@ -70,7 +112,7 @@ def sign_up(request):
 @permission_classes([IsAuthenticated])  # post creation only for authenticated users
 def create_post(request):
     try:
-        post = models.Post.objects.create(user=request.user, **request.data)
+        post = models.Post.objects.create(user=request.user, content=request.data.get('content'))
         return Response(_get_resp(SUCCESS, post.pk))
     except Exception as e:
         return Response(_get_resp(FAIL, str(e)), status=status.HTTP_500_INTERNAL_SERVER_ERROR)
@@ -111,3 +153,62 @@ def trigger_like(request, **kwargs):
         return Response(_get_resp(SUCCESS, f'Post with id {post_id} {un}liked'), status=status.HTTP_200_OK)
     except Exception as e:
         return Response(_get_resp(FAIL, str(e)), status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
+@login_required(login_url='/accounts/login/')
+@permission_classes([IsAuthenticated])
+def index(request):
+    template = 'index.html'
+    # for simplification show only 20 last posts #TODO: infinite scroll or pagination
+    posts = models.Post.objects.all().order_by('-timestamp')[:20]
+    own_profile = models.UserProfile.objects.filter(user=request.user)
+
+    return _HttpResponse(request, template, {
+        "posts": posts,
+        "user": request.user.username if not own_profile else own_profile[0]
+    })
+
+
+def login_view(request):
+    template = 'registration/login.html'
+    response = _HttpResponse(request, template, {})
+
+    if request.method == 'POST':
+        form = AuthenticationForm(data=request.POST)
+        if form.is_valid():
+            user = form.get_user()
+            login(request, user)
+            return redirect('/')
+        else:
+            response = _HttpResponse(request, template, {
+                'form': form,
+                'login_error': form.error_messages.get('invalid_login')
+            })
+
+
+    return response
+
+
+def logout_view(request):
+    logout(request)
+    return redirect('/')
+
+
+def signup_view(request):
+    return _HttpResponse(request, 'registration/signup.html', {})
+
+def profile_view(request):
+    try:
+        user = models.UserProfile.objects.get(user=request.user)
+    except models.UserProfile.DoesNotExist:
+        user = request.user.username
+
+    context = {'user': user}
+
+    if request.method == 'POST':
+        form = forms.UserProfileForm(instance=user, data=request.POST)
+        if form.is_valid():
+            form.save()
+            context['update_success'] = f'User {user} updated successfully'
+
+    return _HttpResponse(request, 'profile.html', context)
