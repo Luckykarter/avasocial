@@ -1,0 +1,160 @@
+{% load static %}
+<!doctype html>
+<html lang="en">
+  <head>
+
+
+<link href="{% static 'assets/dist/css/bootstrap.min.css' %}" rel="stylesheet">
+
+
+  <title>Bootstrap Example</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+          <link href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+
+</head>
+
+
+<header>
+  <div class="collapse bg-dark" id="navbarHeader">
+    <div class="container">
+      <div class="row">
+        <div class="col-sm-8 col-md-7 py-4">
+          <h4 class="text-white">About</h4>
+          <p class="text-muted">This is a Bootstrap frontend for an API-based simple social network written on Django that allows such basic functions as registration, posting texts and liking posts</p>
+        <p class="text-muted">All communication with API is done via Ajax requests</p>
+        </div>
+        <div class="col-sm-4 offset-md-1 py-4">
+          <h4 class="text-white">Contact</h4>
+          <ul class="list-unstyled">
+            <li><a href="//github.com/luckykarter" class="text-white">GitHub</a></li>
+            <li><a href="//www.linkedin.com/in/egor-wexler/" class="text-white">LinkedIn</a></li>
+            <li><a href="mailto:egor.wexler@icloud.com" class="text-white">Email me</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="navbar navbar-dark bg-dark shadow-sm sticky-top">
+    <div class="container d-flex justify-content-between">
+      <a href="/" class="navbar-brand d-flex align-items-center">
+        <strong>Ava Social</strong>
+      </a>
+        
+    <ul class="navbar-nav ml-auto">
+        <a id="user-label" class="nav-link text-white mr-3">You logged in as {{ user }}</a>
+    </ul>
+    <ul class="navbar-nav ml-auto">
+        <a href="/accounts/logout" class="nav-link text-white mr-3">Sign out</a>
+    </ul>
+        
+
+      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarHeader" aria-controls="navbarHeader" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+    </div>
+  </div>
+</header>
+
+<body>
+<div class="container">
+    
+    {% if update_error %}
+      <div id="alert-line" class="alert alert-danger" role="alert">
+        <small id='alert-text'>{{ update_error }}</small>
+     </div>
+    {% endif %}
+    
+    {% if update_success %}
+      <div id="alert-line" class="alert alert-success" role="alert">
+        <small id='alert-text'>{{ update_success }}</small>
+     </div>
+    {% endif %}
+    
+
+    <div class="row">
+  		<div class="col-sm-10"><h1>{{ user }}</h1></div>
+    </div>
+    <div class="row">
+  		<div class="col-sm-3"><!--left col-->
+              
+
+      <div class="text-center">
+        <img src="http://ssl.gstatic.com/accounts/ui/avatar_2x.png" class="avatar img-circle img-thumbnail" alt="avatar">
+        <h6>Upload a different photo... <p class="text-muted">(not yet supported)</p></h6>
+        <input type="file" class="text-center center-block file-upload">
+      </div><br>
+
+               
+          <div class="panel panel-default">
+            <div class="panel-heading">Website <i class="fa fa-link fa-1x"></i></div>
+            <div class="panel-body"><a href="{{ user.site }}">{{ user.site }}</a></div>
+          </div>
+          
+          
+          <ul class="list-group">
+            <li class="list-group-item text-muted">Activity <i class="fa fa-dashboard fa-1x"></i></li>
+            <li class="list-group-item text-right"><span class="pull-left"><strong>Likes</strong></span>{{ user.likes_count }}</li>
+            <li class="list-group-item text-right"><span class="pull-left"><strong>Posts</strong></span>{{ user.posts_count }}</li>
+          </ul> 
+
+          
+        </div><!--/col-3-->
+    	<div class="col-sm-9">   
+            <div class="tab-pane active" id="home">
+
+                                       
+                  <form class="form" action="" method="post" id="registrationForm">
+                      {% csrf_token %}
+                      <div class="form-group">
+                          <div class="col-xs-6">
+                              <label for="first_name"><h4>First name</h4></label>
+                              <input type="text" class="form-control" name="name" id="first_name" placeholder="First Name" title="Enter your first name" value="{{ user.name }}">
+                          </div>
+                      </div>
+                      <div class="form-group">
+                          <div class="col-xs-6">
+                            <label for="last_name"><h4>Last name</h4></label>
+                              <input type="text" class="form-control" name="surname" id="last_name" placeholder="Last Name" title="Enter your last name" value="{{ user.surname }}">
+                          </div>
+                      </div>
+
+                      <div class="form-group">
+                          <div class="col-xs-6">
+                              <label for="email"><h4>Email</h4></label>
+                              <input type="email" class="form-control" name="email" id="email" placeholder="you@email.com" value="{{ user.email }}" readonly>
+                          </div>
+                      </div>
+                      <div class="form-group">
+                          <div class="col-xs-6">
+                              <label for="country"><h4>Country</h4></label>
+                              <input type="text" class="form-control" id="country" name="country" placeholder="Somewhere" title="Enter a country" value="{{ user.country }}">
+                          </div>
+                      </div>
+                      <div class="form-group">
+                          <div class="col-xs-6">
+                              <label for="city"><h4>City</h4></label>
+                              <input type="text" class="form-control" id="city" placeholder="Somewhere" name="city" title="Enter a city" value="{{ user.city }}">
+                          </div>
+                      </div>
+                     <div class="form-group">
+                          <div class="col-xs-6">
+                              <label for="employment"><h4>Employment</h4></label>
+                              <input type="text" class="form-control" id="employment" placeholder="Employment" name="employment" title="Enter a city" value="{{ user.employment }}">
+                          </div>
+                      </div>
+                    <hr>
+                    <button id="btn-save" class="btn btn-lg btn-primary btn-block mb-3" type="submit">Update Profile</button>
+
+              	</form>      
+             </div><!--/tab-pane-->
+
+            </div>
+
+        </div><!--/col-9-->
+    </div><!--/row-->
+      <p class="mt-5 mb-3 text-muted" align="center">&copy; 2020</p>
+    </body>
+    <footer><script src="{% static 'assets/dist/js/bootstrap.bundle.min.js' %}"></script></footer>
+</html>                                     

@@ -35,6 +35,18 @@ class UserProfile(models.Model):
     avatar = models.FileField(verbose_name='Avatar picture', storage=os.path.join(settings.BASE_DIR, 'data'),
                               blank=True)
 
+    @property
+    def location(self):
+        return ', '.join(filter(None, [self.country.capitalize(), self.city.capitalize()]))
+
+    @property
+    def likes_count(self):
+        return sum([post.likes for post in Post.objects.filter(user=self.user)])
+
+    @property
+    def posts_count(self):
+        return Post.objects.filter(user=self.user).count()
+
     def save(self, *args, **kwargs):
 
         validate_email(self.email)
@@ -48,7 +60,8 @@ class UserProfile(models.Model):
         self.employment = person.employment if not self.employment else self.employment
 
         # Create User authentication and update some fields
-        self.user = User.objects.create_user(self.user.username, password=self.user.password)
+        if not self.user.pk:
+            self.user = User.objects.create_user(self.user.username, password=self.user.password)
         self.user.first_name = self.name
         self.user.last_name = self.surname
         self.user.email = self.email
@@ -72,11 +85,19 @@ class Post(models.Model):
     user = models.ForeignKey(User, verbose_name='User', on_delete=models.CASCADE,
                              help_text='User submitted a post', default='')
     content = models.TextField(verbose_name='Post content', default='')
-    timestamp = models.DateTimeField(verbose_name='Created', auto_now=True,
+    timestamp = models.DateTimeField(verbose_name='Created', auto_now_add=True,
                                      help_text='Post creation time')
     likes = models.IntegerField(default=0)
 
     likes_users = models.TextField(default='', blank=True)
+
+    @property
+    def user_profile(self):
+        return UserProfile.objects.get(user=self.user)
+
+    @property
+    def text_likes(self):
+        return f'Like{"s" if str(self.likes)[-1] != "1" else ""}'
 
     def __str__(self):
         return f'{str(self.user)}: {" ".join(self.content.split()[:20])}'

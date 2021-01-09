@@ -22,6 +22,9 @@ from drf_yasg import openapi
 from django.conf.urls import url
 from django.contrib.auth.decorators import login_required
 from avasocial.views import swagger
+from socialnetwork import views
+from django.views.generic import RedirectView
+from django.contrib.auth.views import LoginView
 
 
 schema_view = get_schema_view(
@@ -39,9 +42,16 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('user/login/', jwt_views.TokenObtainPairView.as_view(), name='token_obtain_pair'),
     path('user/login/refresh/', jwt_views.TokenRefreshView.as_view(), name='token_refresh'),
-    path("", include("socialnetwork.urls")),
-    path("", swagger),
+    path('user/profile/', views.profile_view, name='user_profile'),
 
+    path("", include("socialnetwork.urls")),
+    path("", views.index),
+    path("accounts/login/", views.login_view),
+    path("accounts/logout/", views.logout_view),
+    path("accounts/signup/", views.signup_view),
+
+
+    url(r'^favicon\.ico$', RedirectView.as_view(url='/static/images/favicon.ico')),
     url(r'^swagger(?P<format>\.json|\.yaml)$', schema_view.without_ui(cache_timeout=0), name='schema-json'),
     url(r'^swagger/$', schema_view.with_ui('swagger', cache_timeout=0), name='schema-swagger-ui'),
     url(r'^redoc/$', schema_view.with_ui('redoc', cache_timeout=0), name='schema-redoc'),
