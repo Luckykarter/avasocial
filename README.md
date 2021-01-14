@@ -13,7 +13,7 @@ https://github.com/Luckykarter/avabot - The bot that can be used for demonstrati
 The handlers for those services can be found in **avasocial/extapps.py**
 
 ## Installation
-The current built is for Heroku deployment. 
+The current builв is for Heroku deployment. 
 Installation is deployed on: https://avasocial.herokuapp.com/
 
 ### Database
@@ -53,7 +53,7 @@ Please refer to the description of /user/login/ endpoint. For additional informa
 ## Used libraries
 Please refer to requirements.txt for the full list of dependencies. 
 
-Some information about the choosen libraries:
+Some information about the chosen libraries:
 - django-heroku - used for Heroku deployment
 - djangorestframework-simplejwt - for convenient access to JWT functionality
 - drf-yasg - "yet another swagger generator". For generating Swagger/Redoc documentation
