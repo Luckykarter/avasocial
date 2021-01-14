@@ -13,7 +13,7 @@ https://github.com/Luckykarter/avabot - The bot that can be used for demonstrati
 The handlers for those services can be found in **avasocial/extapps.py**
 
 ## Installation
-The current builв is for Heroku deployment. 
+The current build is for Heroku deployment. 
 Installation is deployed on: https://avasocial.herokuapp.com/
 
 ### Database
