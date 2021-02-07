@@ -36,7 +36,7 @@ SECRET_KEY = os.environ['SECRET_KEY']
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
 
-ALLOWED_HOSTS = ['https://avasocial.herokuapp.com/', 'localhost']
+ALLOWED_HOSTS = ['https://ew-social.herokuapp.com/', 'http://ew-social.herokuapp.com/', 'localhost']
 HUNTER = Hunter(os.environ['HUNTER_KEY'])
 CLEAR_BIT = ClearBit(os.environ['CLEARBIT_KEY'])
 
