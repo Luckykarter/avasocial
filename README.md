@@ -14,7 +14,9 @@ The handlers for those services can be found in **avasocial/extapps.py**
 
 ## Installation
 The current build is for Heroku deployment. 
-Installation is deployed on: https://avasocial.herokuapp.com/
+Installation is deployed on: https://ew-social.herokuapp.com/
+
+It also contains Bootstrap-based front-end that utilizes basic features
 
 ### Database
 For local development - Python builtin database sqllite3 is used.
@@ -29,19 +31,14 @@ The app uses three secret keys that are served from environment variables (or .e
 ## API Reference
 
 ### SwaggerUI
-https://avasocial.herokuapp.com/swagger
+https://ew-social.herokuapp.com/swagger
 
-<a href="https://avasocial.herokuapp.com/swagger" target="_blank">
-<img src="http://validator.swagger.io/validator?url=https://avasocial.herokuapp.com/swagger.yaml" >
+<a href="https://ew-social.herokuapp.com/swagger" target="_blank">
+<img src="http://validator.swagger.io/validator?url=https://ew-social.herokuapp.com/swagger.yaml" >
 </a>
 
 ### Redoc (OpenAPI specification)
-https://avasocial.herokuapp.com/redoc
-
-### Postman collection (for tests)
-Postman collection including basic tests for endpoints can be found under the following link:
-
-https://www.getpostman.com/collections/7472d2fd7045f06407f0
+https://ew-social.herokuapp.com/redoc
 
 
 ## Authorization
