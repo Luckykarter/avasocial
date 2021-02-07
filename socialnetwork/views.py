@@ -112,8 +112,13 @@ def sign_up(request):
 @permission_classes([IsAuthenticated])  # post creation only for authenticated users
 def create_post(request):
     try:
-        post = models.Post.objects.create(user=request.user, content=request.data.get('content'))
-        return Response(_get_resp(SUCCESS, post.pk))
+        post = serializers.PostSerializer(data=request.data)
+        if post.is_valid():
+
+            post = models.Post.objects.create(user=request.user, content=request.data.get('content'))
+            return Response(_get_resp(SUCCESS, post.pk))
+        else:
+            return Response(_get_resp(FAIL, post.error_messages))
     except Exception as e:
         return Response(_get_resp(FAIL, str(e)), status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
@@ -138,18 +143,12 @@ def trigger_like(request, **kwargs):
         return Response(_get_resp(FAIL, 'You cannot like your own post'), status=status.HTTP_400_BAD_REQUEST)
 
     try:
-        users = post.likes_users.split(',')
         un = ''
-        if request.user.username not in users:
-            users.append(request.user.username)
-            post.likes += 1
-        else:
+        like, created = models.Like.objects.get_or_create(post=post, user=request.user)
+        if not created:
             un = 'un'
-            users.remove(request.user.username)
-            post.likes -= 1
+            like.delete()
 
-        post.likes_users = ",".join(users)
-        post.save()
         return Response(_get_resp(SUCCESS, f'Post with id {post_id} {un}liked'), status=status.HTTP_200_OK)
     except Exception as e:
         return Response(_get_resp(FAIL, str(e)), status.HTTP_500_INTERNAL_SERVER_ERROR)
@@ -184,7 +183,6 @@ def login_view(request):
                 'form': form,
                 'login_error': form.error_messages.get('invalid_login')
             })
-
 
     return response
 

@@ -61,7 +61,7 @@ class UserProfile(models.Model):
 
         # Create User authentication and update some fields
         if not self.user.pk:
-            self.user = User.objects.create_user(self.user.username, password=self.user.password)
+            self.user = User.objects.create_user(username=self.user.username, password=self.user.password)
         self.user.first_name = self.name
         self.user.last_name = self.surname
         self.user.email = self.email
@@ -87,9 +87,10 @@ class Post(models.Model):
     content = models.TextField(verbose_name='Post content', default='')
     timestamp = models.DateTimeField(verbose_name='Created', auto_now_add=True,
                                      help_text='Post creation time')
-    likes = models.IntegerField(default=0)
 
-    likes_users = models.TextField(default='', blank=True)
+    @property
+    def likes(self):
+        return Like.objects.filter(post=self).count()
 
     @property
     def user_profile(self):
@@ -101,6 +102,11 @@ class Post(models.Model):
 
     def __str__(self):
         return f'{str(self.user)}: {" ".join(self.content.split()[:20])}'
+
+
+class Like(models.Model):
+    post = models.ForeignKey(Post, verbose_name='Post', on_delete=models.CASCADE)
+    user = models.ForeignKey(User, verbose_name='User', on_delete=models.CASCADE)
 
 
 class ResponseStatus(models.Model):

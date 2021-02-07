@@ -1,6 +1,6 @@
 from pyhunter import PyHunter
 import clearbit
-
+from requests.exceptions import HTTPError
 
 class ClearBit:
     def __init__(self, api_key):
@@ -45,6 +45,8 @@ class Hunter(PyHunter):
         :param email: e-mail address to validate
         :return: True if e-mail is valid, False - otherwise
         """
-
-        validation = self.email_verifier(email)
+        try:
+            validation = self.email_verifier(email)
+        except HTTPError:
+            return False
         return not (validation.get('status', 'invalid') == 'invalid')

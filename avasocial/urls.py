@@ -29,9 +29,19 @@ from django.contrib.auth.views import LoginView
 
 schema_view = get_schema_view(
    openapi.Info(
-      title="AVA Social Network",
+      title="Basic back-end of simple Social Network",
       default_version='v1',
-      description="Egor Wexler\'s home assignment",
+      description="API endpoints that serving basic Twitter-like social network\n"
+                  "Main features are:\n"
+                  "<ul>"
+                  "<li>Register New User</li>"
+                  "<li>Login for registered user</li>"
+                  "<li>Create a post (text)</li>"
+                  "<li>Like a post</li>"
+                  "</ul>\n"
+                  "The example of front-end working with it via AJAX can be found on the following address:\n"
+                  "<a href='https://ew-social.herokuapp.com'>ew-social.herokuapp.com</a><br>\n"
+                  "For simplicity it is served by the same Django server as back-end",
       contact=openapi.Contact(email="egor.wexler@icloud.com"),
    ),
    public=True,
