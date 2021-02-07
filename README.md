@@ -1,4 +1,4 @@
-# avasocial
+# Rest API for social network
 REST API Django based simple social network
 
 The purpose of this application is to provide REST API endpoints for serving social network activities.
