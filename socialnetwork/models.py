@@ -52,12 +52,12 @@ class UserProfile(models.Model):
         validate_email(self.email)
         person = settings.CLEAR_BIT.PersonData(self.email)
 
-        self.name = person.name if not self.name else self.name
-        self.surname = person.surname if not self.surname else self.surname
-        self.country = person.country if not self.country else self.country
-        self.city = person.city if not self.city else self.city
-        self.site = person.site if not self.site else self.site
-        self.employment = person.employment if not self.employment else self.employment
+        self.name = self.name or person.name
+        self.surname = self.surname or person.surname
+        self.country = self.country or person.country
+        self.city = self.city or person.city
+        self.site = self.site or person.site
+        self.employment = self.employment or person.employment
 
         # Create User authentication and update some fields
         if not self.user.pk:
